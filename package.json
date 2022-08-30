@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/tinvaan/frenzy/issues"
   },
-  "homepage": "https://github.com/tinvaan/frenzy#readme"
+  "homepage": "https://github.com/tinvaan/frenzy#readme",
+  "dependencies": {
+    "restify": "^8.6.1"
+  }
 }
