@@ -4,6 +4,9 @@
   "description": "Food delivery backend",
   "main": "app/index.js",
   "scripts": {
+    "start": "node --no-deprecation app/index.js",
+    "dev": "nodemon --no-deprecation app/index.js",
+    "debug": "node inspect app/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,5 +22,8 @@
   "dependencies": {
     "restify": "^8.6.1",
     "restify-router": "^0.6.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
   }
 }
