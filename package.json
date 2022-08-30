@@ -2,7 +2,7 @@
   "name": "frenzy",
   "version": "1.0.0",
   "description": "Food delivery backend",
-  "main": "index.js",
+  "main": "app/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/tinvaan/frenzy#readme",
   "dependencies": {
-    "restify": "^8.6.1"
+    "restify": "^8.6.1",
+    "restify-router": "^0.6.2"
   }
 }
