@@ -7,7 +7,7 @@
     "start": "node --no-deprecation app/index.js",
     "dev": "nodemon --no-deprecation app/index.js",
     "debug": "node inspect app/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests/utils/datetime.js"
   },
   "repository": {
     "type": "git",
@@ -20,10 +20,13 @@
   },
   "homepage": "https://github.com/tinvaan/frenzy#readme",
   "dependencies": {
+    "moment": "^2.29.4",
+    "moment-range": "^4.0.2",
     "restify": "^8.6.1",
     "restify-router": "^0.6.2"
   },
   "devDependencies": {
+    "blue-tape": "^1.0.0",
     "nodemon": "^2.0.19"
   }
 }
