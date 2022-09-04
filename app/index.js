@@ -23,8 +23,9 @@ server.listen(3000, async () => {
     console.log(`${server.name} listening at ${server.url}`)
 })
 
-// Log responses to console
-server.on('after', (req, res, next) => {
-    console.log(`\n> ${res.statusCode} ${req.method} ${req.url}`)
-    console.log(res._data)
+// Log requests and responses to console
+server.pre((req, res, next) => {
+    console.log(`\n>>> ${res.statusCode} ${req.method} ${req.url}`)
+    next()
 })
+server.on('after', (req, res, next) => console.log(res._data))
