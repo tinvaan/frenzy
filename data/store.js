@@ -5,17 +5,36 @@ const path = require('path')
 
 const { Sequelize } = require('sequelize')
 
-const { Users } = require('../models/users')
-const { Restaurants } = require('../models/restaurants')
+const { Users } = require('../app/models/users')
+const { Restaurants } = require('../app/models/restaurants')
 
 
-const connection = new Sequelize('sqlite::memory')
+const connection = new Sequelize({
+    dialect: 'sqlite', storage: path.resolve(__dirname, '..', 'dev.sqlite')
+})
+
+const down = () => connection.close()
 const data = (target) => fs.readFileSync(path.resolve(__dirname, `${target}.json`), 'utf-8')
+const up = () => {
+    const u = Users(connection),
+          r = Restaurants(connection)
 
-
-exports.up = async () => {
-    Users(connection).bulkCreate(Object.values(data('users')))
-    Restaurants(connection).bulkCreate(Object.values(data('restaurants')))
+    u.sync()
+        .catch(err => console.error(err))
+        .then(res => u.bulkCreate(Object.values(data('users'))))
+    r.sync()
+        .catch(err => console.error(err))
+        .then(res => u.bulkCreate(Object.values(data('restaurants'))))
 }
 
-exports.down = () => connection.close()
+
+module.exports = { up, down, connection }
+
+if (require.main === module) {
+    connection.sync({force: true})
+        .catch(err => console.error(err))
+        .then(res => {
+            if (process.argv[2] === 'up')   return up()
+            if (process.argv[2] === 'down') return down()
+        })
+}
