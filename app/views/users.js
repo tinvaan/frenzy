@@ -1,11 +1,20 @@
 'use strict'
 
-exports.show = (req, res, next) => {
-    res.json({message: 'Fetching all users'})
+const { Users } = require('../models/users')
+const { connection } = require('../../data/store')
+
+
+const u = Users(connection)
+
+
+exports.show = async (req, res, next) => {
+    const users = await u.findAll({ limit: 5, offset: req.query.page })
+    res.json(users)
     next()
 }
 
-exports.fetch = (req, res, next) => {
-    res.json({message: `Fetching user with id: ${req.params.id}`})
+exports.fetch = async (req, res, next) => {
+    const user = await u.findOne({ where: {id: req.params.id} })
+    res.json(user)
     next()
 }
