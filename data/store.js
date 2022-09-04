@@ -13,19 +13,29 @@ const connection = new Sequelize({
     dialect: 'sqlite', storage: path.resolve(__dirname, '..', 'dev.sqlite')
 })
 
-const down = () => connection.close()
+const shorten = (rows) => rows.splice(0, 5000)
+
 const data = (target) => fs.readFileSync(path.resolve(__dirname, `${target}.json`), 'utf-8')
+
 const up = () => {
     const u = Users(connection),
           r = Restaurants(connection)
 
     u.sync()
         .catch(err => console.error(err))
-        .then(res => u.bulkCreate(Object.values(data('users'))))
+        .then(res => {
+            console.log('\nPopulating users database ...')
+            u.bulkCreate(shorten(Object.values(data('users'))))
+        })
     r.sync()
         .catch(err => console.error(err))
-        .then(res => u.bulkCreate(Object.values(data('restaurants'))))
+        .then(res => {
+            console.log('\nPopulating restaurants database ...')
+            u.bulkCreate(shorten(Object.values(data('restaurants'))))
+        })
 }
+
+const down = () => connection.close()
 
 
 module.exports = { up, down, connection }
