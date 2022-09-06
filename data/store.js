@@ -43,24 +43,23 @@ const u = Users(connection)
 const r = Restaurants(connection)
 
 // Populate database with raw data
-const up = () => {
-    u.sync()
-        .catch(err => console.error(err))
-        .then(res => u.bulkCreate(data.users()))
-    r.sync()
-        .catch(err => console.error(err))
-        .then(res => r.bulkCreate(data.restaurants()))
+const up = async () => {
+    await u.sync()
+    await u.bulkCreate(data.users())
+
+    await r.sync()
+    await r.bulkCreate(data.restaurants())
 }
 
 // Cleanup the database
-const down = () => {
-    u.destroy({ truncate: true, cascade: true })
-    r.destroy({ truncate: true, cascade: true })
-    connection.close()
+const down = async () => {
+    await u.destroy({ truncate: true, cascade: true })
+    await r.destroy({ truncate: true, cascade: true })
+    await connection.close()
 }
 
 
-module.exports = { up, down, connection }
+module.exports = { up, down, data, connection }
 
 
 if (require.main === module) {
