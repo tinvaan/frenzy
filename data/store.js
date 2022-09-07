@@ -55,7 +55,6 @@ const up = async () => {
 const down = async () => {
     await u.destroy({ truncate: true, cascade: true })
     await r.destroy({ truncate: true, cascade: true })
-    await connection.close()
 }
 
 
