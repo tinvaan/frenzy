@@ -5,7 +5,7 @@
   "main": "app/index.js",
   "scripts": {
     "debug": "node inspect app/index.js",
-    "test": "node tests/data/store.js",
+    "test": "jest",
     "dev": "nodemon --no-deprecation app/index.js",
     "start": "node --no-deprecation app/index.js",
     "prestart": "node --no-deprecation data/store.js up",
@@ -30,7 +30,8 @@
     "sqlite3": "^5.0.11"
   },
   "devDependencies": {
-    "blue-tape": "^1.0.0",
+    "@types/jest": "^29.0.0",
+    "jest": "^29.0.2",
     "nodemon": "^2.0.19"
   }
 }
