@@ -19,6 +19,26 @@ function inspect(string, count) {
 }
 
 describe('Parse a given weekly timetable string', () => {
+    test('Invalid time strings', () => {
+        const strings = [
+            "",
+            "abcdef",
+            "    12:45 AM",
+            "Mon xyz, foo bar: 12:34 PM",
+        ]
+
+        strings.forEach(string => {
+            for (let [_, days] of Object.entries(parse(string))) {
+                Object.values(days).forEach(d => {
+                    expect(() => {
+                        d.day() === 'Invalid date' ||
+                        !d.hours.start.isValid() || !d.hours.end.isValid()
+                    }).toBeTruthy()
+                })
+            }
+        })
+    })
+
     test('Same day time strings', () => {
         const strings = [
             " Fri 8: 00 am - 3 pm",
