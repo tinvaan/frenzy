@@ -3,14 +3,14 @@
 const moment = require('moment-range').extendMoment(require('moment'))
 
 const defaults = {
-    dates: {month: 'Jan', year: 1970}
+    dates: { month: 'Jan', year: 1970 }
 }
 
 
 /*
  * Returns a weekly schedule, given a string of daily opening and closing hours
  */
-exports.parse = (timings) => {
+const parse = (timings) => {
     return timings.split('/').map(timing => {
         let overflows = [],
             days = timing.split(',').map(str => str.split('-')).flat()
@@ -44,3 +44,6 @@ exports.parse = (timings) => {
         return days
     })
 }
+
+
+module.exports = { defaults, parse }
