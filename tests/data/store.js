@@ -66,6 +66,5 @@ describe('Restaurants model population', () => {
         await store.down()
         const after = await db.restaurants.findAll()
         expect(after.length).toEqual(0)
-        // try { await db.restaurants.findAll() } catch (err) { expect(err).not.toBeNull() }
     })
 })
