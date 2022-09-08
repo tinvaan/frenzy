@@ -12,17 +12,35 @@ const defaults = {
  */
 exports.parse = (timings) => {
     return timings.split('/').map(timing => {
-        var days = timing.split(',').map(str => str.split('-')).flat()
-                                    .map(str => str.trim())
-
-        const [ open, close ] = days.splice(days.length - 2, 2)
-        const opening = moment(open, 'dddd hh:mm am').set(defaults.dates)
-        const closing = moment(close, 'hh:mm am').set('day', opening.day()).set(defaults.dates)
+        let overflows = [],
+            days = timing.split(',').map(str => str.split('-')).flat()
+                                    .map(str => str.trim()),
+            [ open, close ] = days.splice(days.length - 2, 2),
+            opening = moment(open, 'dddd hh:mm am').set(defaults.dates),
+            closing = moment(close, 'hh:mm am').set('day', opening.day()).set(defaults.dates)
 
         days.push(opening.format('ddd'))
-        return days.map(d => Object({
+
+        // If closing time is earlier than the opening time,
+        // let's assume that the closing time falls on the next calendar day
+        if (closing.isSameOrBefore(opening)) {
+            let dt = closing.clone()
+            closing.endOf('day')
+            dt.set('day', dt.day() + 1)
+            days.forEach(d => overflows.push({
+                day: d,
+                hours: moment.range(
+                    dt.clone().startOf('day').set(defaults.dates),
+                    dt.set(defaults.dates)
+                )
+            }))
+        }
+
+        days = days.map(d => Object({
             day: d,
             hours: moment.range(opening.set('day', d), closing.set('day', d))
         }))
+        days.push(...overflows)
+        return days
     })
 }
