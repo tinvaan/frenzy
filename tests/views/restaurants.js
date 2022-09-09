@@ -50,4 +50,20 @@ describe('Query restaurants details', () => {
         expect(r.statusCode).toEqual(200)
         expect(r.body.length).toBeGreaterThan(1)
     })
+
+    test('Filter restaurants for dishes within a price range', async () => {
+        let r = await app.get('/restaurants/sort')
+        expect(r.statusCode).toEqual(400)
+        expect(r.body.message).toEqual('Invalid query parameters')
+
+        r = await app.get('/restaurants/sort')
+                         .query({ x: 10, y: 10, price: 25 })
+        expect(r.statusCode).toEqual(200)
+        expect(r.body.length).toEqual(10)
+
+        r = await app.get('/restaurants/sort')
+                     .query({ x: 10, y: 30, price: 25 })
+        expect(r.statusCode).toEqual(200)
+        expect(r.body.length).toEqual(30)
+    })
 })
