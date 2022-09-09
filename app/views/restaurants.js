@@ -46,3 +46,28 @@ exports.open = async (req, res, next) => {
     res.json(active)
     next()
 }
+
+exports.priceSort = async (req, res, next) => {
+    const x = req.query.x,
+          y = req.query.y,
+          price = req.query.price,
+          more = req.query.more || true,
+          restaurants = await r.findAll()
+    if (!x || !y) {
+        return next(new BadRequestError('Invalid query parameters'))
+    }
+
+    // Filter restaurants that have atleast 'x' items within the price range
+    let filtered = restaurants.filter(restaurant => {
+        const dishes = restaurant.menu.filter((item => {
+            return item.price <= price
+        }))
+        return more ? dishes.length > x : dishes.length <= x
+    })
+
+    // Sort them alphabetically and return the top 'y' items
+    filtered.sort((a, b) => a.name.localeCompare(b.name)).splice(y)
+
+    res.json(filtered.map(item => item.name))
+    next()
+}
