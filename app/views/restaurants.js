@@ -1,7 +1,7 @@
 'use strict'
 
 const moment = require('moment-range').extendMoment(require('moment'))
-const { BadRequestError } = require('restify-errors')
+const { BadRequestError, NotFoundError } = require('restify-errors')
 
 const datetime = require('../../utils/datetime')
 const { connection } = require('../../data/store')
@@ -12,20 +12,28 @@ const r = Restaurants(connection)
 
 
 exports.show = async (req, res, next) => {
-    const restaurants = await r.findAll({ limit: 5, offset: req.query.page })
+    const restaurants = await r.findAll({
+        offset: req.query.page, limit: req.query.records || 10
+    })
     res.json(restaurants)
     next()
 }
 
 exports.fetch = async (req, res, next) => {
     const restaurant = await r.findOne({ where: { id: req.params.id } })
+    if (!restaurant) {
+        return next(new NotFoundError(`Restaurant not found`))
+    }
+
     res.json(restaurant)
     next()
 }
 
 exports.open = async (req, res, next) => {
     const time = moment(req.query.time).set(datetime.defaults.dates)
-    if (!time.isValid()) { return next(new BadRequestError('Invalid date')) }
+    if (!time.isValid()) {
+        return next(new BadRequestError('Invalid date'))
+    }
 
     const restaurants = await r.findAll()
     const active = restaurants

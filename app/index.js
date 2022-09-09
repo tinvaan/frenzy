@@ -29,3 +29,6 @@ server.pre((req, res, next) => {
     next()
 })
 server.on('after', (req, res, next) => console.log(res._data))
+
+
+module.exports = server
