@@ -66,4 +66,19 @@ describe('Query restaurants details', () => {
         expect(r.statusCode).toEqual(200)
         expect(r.body.length).toEqual(30)
     })
+
+    test('Search for restaurants or dishes', async () => {
+        const names = ['Roma', 'Postum', 'Milk Veal', 'Roma Ristorante']
+        names.forEach(async (q) => {
+            let r = await app.get('/restaurants/search').query({ name: q })
+
+            expect(r.statusCode).toEqual(200)
+            r.body.forEach(res => {
+                expect(
+                    res.food?.toLowerCase().includes(q.toLowerCase()) ||
+                    res.restaurant?.toLowerCase().includes(q.toLowerCase())
+                ).toBeTruthy()
+            })
+        })
+    })
 })

@@ -3,12 +3,14 @@
 const fs = require('fs')
 const path = require('path')
 
+const TrieSearch = require('trie-search')
 const { Sequelize } = require('sequelize')
 
 const { Users } = require('../app/models/users')
 const { Restaurants } = require('../app/models/restaurants')
 
 
+const trie = new TrieSearch('name')
 const data = {
     users: () => {
         const content = fs.readFileSync(path.resolve(__dirname, 'users.json'), 'utf-8')
@@ -23,12 +25,20 @@ const data = {
     restaurants: () => {
         const content = fs.readFileSync(path.resolve(__dirname, 'restaurants.json'), 'utf-8')
         return Object.values(JSON.parse(content))
-            .map(item => Object({
-                'menu': item.menu,
-                'name': item.restaurantName,
-                'balance': item.cashBalance,
-                'timings': item.openingHours,
-            }))
+            .map(item => {
+                // Populate search index
+                trie.map(item.restaurantName, {food: null, restaurant: item.restaurantName})
+                item.menu.forEach(dish => {
+                    trie.map(dish.dishName, {food: dish.dishName, restaurant: item.restaurantName})
+                })
+
+                return {
+                    'menu': item.menu,
+                    'name': item.restaurantName,
+                    'balance': item.cashBalance,
+                    'timings': item.openingHours,
+                }
+            })
     }
 }
 
@@ -58,7 +68,7 @@ const down = async () => {
 }
 
 
-module.exports = { up, down, data, connection }
+module.exports = { up, down, data, trie, connection }
 
 
 if (require.main === module) {
