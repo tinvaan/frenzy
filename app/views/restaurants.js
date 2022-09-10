@@ -3,6 +3,7 @@
 const moment = require('moment-range').extendMoment(require('moment'))
 const { BadRequestError, NotFoundError } = require('restify-errors')
 
+const store = require('../../data/store')
 const datetime = require('../../utils/datetime')
 const { connection } = require('../../data/store')
 const { Restaurants } = require('../models/restaurants')
@@ -44,6 +45,15 @@ exports.open = async (req, res, next) => {
         .map(restaurant => Object({ name: restaurant.name, timings: restaurant.timings }))
 
     res.json(active)
+    next()
+}
+
+exports.search = async (req, res, next) => {
+    if (!req.query.name) {
+        return next(BadRequestError('Invalid search term'))
+    }
+
+    res.json(store.trie.search(req.query.name))
     next()
 }
 

@@ -16,6 +16,7 @@ router.get('/restaurants', restaurants.show)
 router.get('/restaurants/:id', restaurants.fetch)
 router.get('/restaurants/open', restaurants.open)
 router.get('/restaurants/sort', restaurants.priceSort)
+router.get('/restaurants/search', restaurants.search)
 
 
 module.exports = router
