@@ -3,7 +3,13 @@
 const restify = require('restify')
 const router = require('./routes')
 
-const server = restify.createServer({ name: 'frenzy', ignoreTrailingSlash: true })
+const server = restify.createServer({
+    name: 'frenzy',
+    ignoreTrailingSlash: true,
+    formatters: {
+        'application/json': (req, res, body) => JSON.stringify(body, null, 2)
+    }
+})
 
 
 // Initialize pre-routing plugins
