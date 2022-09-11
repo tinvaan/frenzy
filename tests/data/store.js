@@ -1,8 +1,5 @@
 'use strict'
 
-const path = require('path')
-const { Sequelize } = require('sequelize')
-
 const store = require('../../data/store')
 const { Users } = require('../../app/models/users')
 const { Restaurants } = require('../../app/models/restaurants')
@@ -12,11 +9,11 @@ const db = {}
 
 
 beforeEach(async () => {
-    db.users = Users(store.connection)
-    await db.users.sync({force: true})
+    db.users = Users(store.connection())
+    await db.users.sync({ force: true })
 
-    db.restaurants = Restaurants(store.connection)
-    await db.users.sync({force: true})
+    db.restaurants = Restaurants(store.connection())
+    await db.users.sync({ force: true })
 })
 
 afterEach(async () => {
@@ -41,7 +38,7 @@ describe('Users model population', () => {
 
         // Cleanup the database
         await store.down()
-        expect(db.users.findAll()).rejects.toBeDefined()
+        expect(db.users.findAll()).resolves.toEqual([])
     })
 })
 

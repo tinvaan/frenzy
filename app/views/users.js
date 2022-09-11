@@ -4,7 +4,7 @@ const { Users } = require('../models/users')
 const { connection } = require('../../data/store')
 
 
-const u = Users(connection)
+const u = Users(connection())
 
 
 exports.show = async (req, res, next) => {

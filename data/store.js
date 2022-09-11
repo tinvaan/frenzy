@@ -44,13 +44,15 @@ const data = {
 
 
 // Connect to a database and define model instances
-const connection = new Sequelize({
-    logging: false,
-    dialect: 'sqlite',
-    storage: path.resolve(__dirname, '..', 'dev.sqlite')
-})
-const u = Users(connection)
-const r = Restaurants(connection)
+const connection = (db='dev.sqlite') => {
+    return new Sequelize({
+        logging: false,
+        dialect: 'sqlite',
+        storage: path.resolve(__dirname, '..', db)
+    })
+}
+const u = Users(connection())
+const r = Restaurants(connection())
 
 // Populate database with raw data
 const up = async () => {
@@ -72,7 +74,7 @@ module.exports = { up, down, data, trie, connection }
 
 
 if (require.main === module) {
-    connection.sync({force: true})
+    connection().sync({force: true})
         .catch(err => console.error(err))
         .then(res => {
             if (process.argv[2] === 'up')   return up()
