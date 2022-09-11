@@ -9,7 +9,7 @@ const { connection } = require('../../data/store')
 const { Restaurants } = require('../models/restaurants')
 
 
-const r = Restaurants(connection)
+const r = Restaurants(connection())
 
 
 exports.show = async (req, res, next) => {
@@ -69,9 +69,7 @@ exports.priceSort = async (req, res, next) => {
 
     // Filter restaurants that have atleast 'x' items within the price range
     let filtered = restaurants.filter(restaurant => {
-        const dishes = restaurant.menu.filter((item => {
-            return item.price <= price
-        }))
+        const dishes = restaurant.menu.filter((item => item.price <= price ))
         return more ? dishes.length > x : dishes.length <= x
     })
 

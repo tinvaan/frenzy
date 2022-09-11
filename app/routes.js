@@ -20,4 +20,3 @@ router.get('/restaurants/search', restaurants.search)
 
 
 module.exports = router
-
