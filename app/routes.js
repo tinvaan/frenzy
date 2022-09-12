@@ -8,10 +8,12 @@ const restaurants = require('./views/restaurants')
 
 
 const router = new Router()
+
 router.get('/users', users.show)
 router.get('/users/:id', users.fetch)
-router.get('/dishes/', dishes.show)
-router.get('/dishes/:id', dishes.fetch)
+router.get('/users/:id/purchases', users.purchases)
+router.post('/users/:id/purchase', users.purchase)
+
 router.get('/restaurants', restaurants.show)
 router.get('/restaurants/:id', restaurants.fetch)
 router.get('/restaurants/open', restaurants.open)

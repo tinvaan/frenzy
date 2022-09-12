@@ -1,0 +1,49 @@
+{
+    "cashBalance": 700.7,
+    "id": 0,
+    "name": "Edith Johnson",
+    "purchaseHistory": [
+        {
+            "dishName": "Olives",
+            "restaurantName": "Roma Ristorante",
+            "transactionAmount": 13.18,
+            "transactionDate": "02/10/2020 04:09 AM"
+        },
+        {
+            "dishName": "Roast Young Turkey",
+            "restaurantName": "Naked City Pizza",
+            "transactionAmount": 12.81,
+            "transactionDate": "04/03/2020 01:56 PM"
+        },
+        {
+            "dishName": "Fruit salad with Sapinette liqueur and petits fours",
+            "restaurantName": "Osteria Mazzantini",
+            "transactionAmount": 11.22,
+            "transactionDate": "02/29/2020 12:13 AM"
+        },
+        {
+            "dishName": "Porterhouse Steak",
+            "restaurantName": "Machete Tequila + Tacos - Lodo",
+            "transactionAmount": 13.03,
+            "transactionDate": "05/13/2018 06:02 PM"
+        },
+        {
+            "dishName": "ASPIC DE FOIE GRAS AU TRUFFE",
+            "restaurantName": "Tegry Bistro - Fishers",
+            "transactionAmount": 12.46,
+            "transactionDate": "11/16/2018 06:49 AM"
+        },
+        {
+            "dishName": "FROZEN MOCHA PRALINE",
+            "restaurantName": "Naupaka Terrace",
+            "transactionAmount": 10.93,
+            "transactionDate": "09/20/2019 10:18 PM"
+        },
+        {
+            "dishName": "Sardines [Sandwich]",
+            "restaurantName": "Oscar's of Dublin",
+            "transactionAmount": 10.45,
+            "transactionDate": "04/20/2019 11:20 AM"
+        }
+    ]
+}
