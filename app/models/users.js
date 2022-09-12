@@ -8,7 +8,7 @@ const attributes = {
     balance: { type: FIELDS.FLOAT },
     purchases: { type: FIELDS.JSON },
     name: { type: FIELDS.STRING, allowNull: false },
-    id: { type: FIELDS.UUID, defaultValue: FIELDS.UUIDV4, primaryKey: true }
+    id: { type: FIELDS.INTEGER, autoIncrement: true, primaryKey: true }
 }
 
 exports.Users = (db) => db.define('Users', attributes, options)
