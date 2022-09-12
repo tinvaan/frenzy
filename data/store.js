@@ -16,6 +16,7 @@ const data = {
         const content = fs.readFileSync(path.resolve(__dirname, 'users.json'), 'utf-8')
         return Object.values(JSON.parse(content))
             .map(item => Object({
+                'id': item.id,
                 'name': item.name,
                 'balance': item.cashBalance,
                 'purchases': item.purchaseHistory,
@@ -44,33 +45,43 @@ const data = {
 
 
 // Connect to a database and define model instances
-const connection = (db='dev.sqlite') => {
-    return new Sequelize({
-        logging: false,
-        dialect: 'sqlite',
-        storage: path.resolve(__dirname, '..', db)
-    })
-}
-const u = Users(connection())
-const r = Restaurants(connection())
+let conn,
+    connection = (db = 'dev.sqlite') => {
+        if (!conn) {
+            conn = new Sequelize({
+                logging: false,
+                dialect: 'sqlite',
+                storage: path.resolve(__dirname, '..', db)
+            })
+        }
+        return conn
+    }
+
+
+// Instantiate models
+const users = Users(connection())
+const restaurants = Restaurants(connection())
+
 
 // Populate database with raw data
 const up = async () => {
-    await u.sync()
-    await u.bulkCreate(data.users())
+    await users.sync()
+    await users.bulkCreate(data.users())
 
-    await r.sync()
-    await r.bulkCreate(data.restaurants())
+    await restaurants.sync()
+    await restaurants.bulkCreate(data.restaurants())
 }
 
 // Cleanup the database
 const down = async () => {
-    await u.destroy({ truncate: true, cascade: true })
-    await r.destroy({ truncate: true, cascade: true })
+    await users.destroy({ truncate: true, cascade: true })
+    await restaurants.destroy({ truncate: true, cascade: true })
 }
 
 
-module.exports = { up, down, data, trie, connection }
+module.exports = {
+    up, down, data, trie, users, restaurants, connection
+}
 
 
 if (require.main === module) {

@@ -1,12 +1,11 @@
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
 const request = require('supertest')
 
 const store = require('../../data/store')
 const fixtures = require('../../tests/fixtures')
 const { server } = require('../../app/index')
+
 const app = request(server)
 
 
@@ -30,14 +29,13 @@ describe('Query restaurants details', () => {
         expect(r.statusCode).toEqual(404)
         expect(r.body.message).toEqual('Restaurant not found')
 
-        r = await app.get('/restaurants?records=1')
-        const expected = r.body.pop()
+        const restaurant = await store.restaurants.findOne({ where: { name: '024 Grille' } })
 
-        r = await app.get(`/restaurants/${expected.id}`)
+        r = await app.get(`/restaurants/${restaurant.id}`)
         expect(r.statusCode).toEqual(200)
-        expect(r.body.name).toEqual(expected.name)
-        expect(r.body.menu).toEqual(expected.menu)
-        expect(r.body.timings).toEqual(expected.timings)
+        expect(r.body.name).toEqual(restaurant.name)
+        expect(r.body.menu).toEqual(restaurant.menu)
+        expect(r.body.timings).toEqual(restaurant.timings)
     })
 
     test('Show all restaurants open at a certain datetime', async () => {
