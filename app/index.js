@@ -19,7 +19,6 @@ server.pre(restify.plugins.pre.dedupeSlashes())
 server.use(restify.plugins.jsonp())
 server.use(restify.plugins.bodyParser())
 server.use(restify.plugins.queryParser())
-server.use(restify.plugins.jsonBodyParser())
 
 // Initialize app routes
 router.applyRoutes(server)
