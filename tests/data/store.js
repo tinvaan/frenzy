@@ -1,67 +1,59 @@
 'use strict'
 
 const store = require('../../data/store')
-const { Users } = require('../../app/models/users')
-const { Restaurants } = require('../../app/models/restaurants')
-
-
-const db = {}
 
 
 beforeEach(async () => {
-    db.users = Users(store.connection())
-    await db.users.sync({ force: true })
-
-    db.restaurants = Restaurants(store.connection())
-    await db.users.sync({ force: true })
+    await store.users.sync({ force: true })
+    await store.restaurants.sync({ force: true })
 })
 
 afterEach(async () => {
-    delete db.users
-    delete db.restaurants
+    await store.users.destroy({ truncate: true, cascade: true })
+    await store.restaurants.destroy({ truncate: true, cascade: true })
 })
 
 describe('Users model population', () => {
     test('Users model insertion', async () => {
-        const before = await db.users.findAll()
+        const before = await store.users.findAll()
         expect(before.length).toEqual(0)
 
         await store.up()
-        const after = await db.users.findAll()
+        const after = await store.users.findAll()
         expect(after.length).toBeGreaterThan(0)
     })
 
     test('Users model cleanup', async () => {
         // Populate the database
         await store.up()
-        expect(db.users.findAll()).resolves.toBeDefined()
+        expect(store.users.findAll()).resolves.toBeDefined()
 
         // Cleanup the database
         await store.down()
-        expect(db.users.findAll()).resolves.toEqual([])
+        expect(store.users.findAll()).resolves.toEqual([])
     })
 })
 
 describe('Restaurants model population', () => {
     test('Restaurants model insertion', async () => {
-        const before = await db.restaurants.findAll()
+        const before = await store.restaurants.findAll()
         expect(before.length).toBeLessThan(store.data.restaurants().length)
 
         await store.up()
 
-        const after = await db.restaurants.findAll()
+        const after = await store.restaurants.findAll()
         expect(after.length).toEqual(store.data.restaurants().length)
     })
 
     test('Restaurants model cleanup', async () => {
         // Populate the database
         await store.up()
-        const before = await db.restaurants.findAll()
+        const before = await store.restaurants.findAll()
         expect(before.length).toBeGreaterThan(0)
 
         // Cleanup the database
         await store.down()
-        const after = await db.restaurants.findAll()
+        const after = await store.restaurants.findAll()
         expect(after.length).toEqual(0)
     })
 })
