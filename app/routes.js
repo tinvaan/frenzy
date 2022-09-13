@@ -3,7 +3,6 @@
 const Router = require('restify-router').Router
 
 const users = require('./views/users')
-const dishes = require('./views/dishes')
 const restaurants = require('./views/restaurants')
 
 
