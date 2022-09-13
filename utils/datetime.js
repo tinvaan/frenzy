@@ -7,6 +7,18 @@ const defaults = {
 }
 
 
+const objectify = (schedule) => {
+    const map = {}
+    schedule.forEach(dt => {
+        if (!Object.keys(map).includes(dt.day)) {
+            map[dt.day] = [dt.hours]
+        } else {
+            map[dt.day].push(dt.hours)
+        }
+    })
+    return map
+}
+
 /*
  * Returns a weekly schedule, given a string of daily opening and closing hours
  */
@@ -41,7 +53,7 @@ const parse = (timings) => {
             hours: moment.range(opening.set('day', d), closing.set('day', d))
         }))
         days.push(...overflows)
-        return days
+        return objectify(days)
     })
 }
 

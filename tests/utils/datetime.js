@@ -2,18 +2,19 @@
 
 const moment = require('moment-range').extendMoment(require('moment'))
 
-const { parse } = require('../../utils/datetime')
+const datetime = require('../../utils/datetime')
 
 
-function inspect(string, count) {
-    for (let [_, days] of Object.entries(parse(string))) {
-        expect(days.length).toBeGreaterThanOrEqual(1)
-        if (count !== undefined) { expect(days.length).toEqual(count) }
+function inspect(string) {
+    for (let dt of Object.values(datetime.parse(string))) {
+        let days = Object.keys(dt),
+            hours = Object.values(dt).flat()
 
-        Object.values(days).forEach(d => {
-            expect(d.day).toBeDefined()
-            expect(moment.isRange(d.hours)).toBeTruthy()
-            expect(d.hours.valueOf()).toBeGreaterThanOrEqual(0) // Check if hours form a valid range
+        expect(days.length).toBeGreaterThan(0)
+        expect(hours.length).toBeGreaterThanOrEqual(1)
+        hours.forEach(t => {
+            expect(moment.isRange(t)).toBeTruthy()
+            expect(t.valueOf()).toBeGreaterThanOrEqual(0)
         })
     }
 }
@@ -24,16 +25,14 @@ describe('Parse a given weekly timetable string', () => {
             "",
             "abcdef",
             "    12:45 AM",
-            "Mon xyz, foo bar: 12:34 PM",
         ]
 
         strings.forEach(string => {
-            for (let [_, days] of Object.entries(parse(string))) {
-                Object.values(days).forEach(d => {
-                    expect(() => {
-                        d.day() === 'Invalid date' ||
-                        !d.hours.start.isValid() || !d.hours.end.isValid()
-                    }).toBeTruthy()
+            for (let dt of Object.values(datetime.parse(string))) {
+                let days = Object.keys(dt)
+                expect(days.includes('Invalid date')).toBeTruthy()
+                Object.values(dt).flat().forEach(t => {
+                    expect(moment.isRange(t) && t.valueOf() >= 0).toBeFalsy()
                 })
             }
         })
@@ -73,8 +72,8 @@ describe('Parse a given weekly timetable string', () => {
     })
 
     test('Multiple day overnight time strings', () => {
-        inspect("Mon, Tues 8 pm - 3 am", 4)
-        inspect("Wed, Thurs, Fri 6:00 pm - 1:00 am", 6)
+        inspect("Mon, Tues 8 pm - 3 am")
+        inspect("Wed, Thurs, Fri 6:00 pm - 1:00 am")
         inspect("Mon, Tues 8 pm - 3 am / Wed, Thurs, Fri 6:00 pm - 1:00 am")
     })
 })

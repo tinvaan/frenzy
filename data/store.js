@@ -7,6 +7,7 @@ const config = require('config')
 const TrieSearch = require('trie-search')
 const { Sequelize } = require('sequelize')
 
+const datetime = require('../utils/datetime')
 const { Users } = require('../app/models/users')
 const { Restaurants } = require('../app/models/restaurants')
 
@@ -38,7 +39,7 @@ const data = {
                     'menu': item.menu,
                     'name': item.restaurantName,
                     'balance': item.cashBalance,
-                    'timings': item.openingHours,
+                    'timings': Object.assign({}, ...datetime.parse(item.openingHours))
                 }
             })
     }
