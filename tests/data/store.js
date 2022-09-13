@@ -1,5 +1,9 @@
 'use strict'
 
+const fs = require('fs')
+const path = require('path')
+const config = require('config')
+
 const store = require('../../data/store')
 
 
@@ -11,6 +15,12 @@ beforeEach(async () => {
 afterEach(async () => {
     await store.users.destroy({ truncate: true, cascade: true })
     await store.restaurants.destroy({ truncate: true, cascade: true })
+})
+
+afterAll(async () => {
+    // Remove the database
+    fs.unlinkSync(path.resolve(config.get('service.root'),
+                               config.get('database.name')))
 })
 
 describe('Users model population', () => {

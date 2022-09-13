@@ -1,15 +1,30 @@
 'use strict'
 
+const fs = require('fs')
+const path = require('path')
+const config = require('config')
+
 const { app } = require('../index')
 
 const fixtures = require('../../fixtures')
 const store = require('../../../data/store')
-const { server } = require('../../../app/index')
+const server = require('../../../app/server')
 
 
-beforeEach(async () => await store.up())
-afterEach(async () => await store.down())
-afterAll(() => server.close())
+beforeAll(async () => {
+    await server.run()
+    await store.up()
+})
+
+afterAll(async () => {
+    await store.down()
+    await server.close()
+
+    // Remove the database
+    fs.unlinkSync(path.resolve(config.get('service.root'),
+                               config.get('database.name'))
+    )
+})
 
 describe('Query restaurants details', () => {
     test('Show all restaurants', async () => {

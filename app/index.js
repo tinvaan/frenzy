@@ -23,11 +23,6 @@ server.use(restify.plugins.queryParser())
 // Initialize app routes
 router.applyRoutes(server)
 
-// Run the app server
-server.listen(3000, async () => {
-    console.log(`${server.name} listening at ${server.url}`)
-})
-
 // Log requests and responses to console
 server.pre((req, res, next) => {
     console.log(`\n>>> ${res.statusCode} ${req.method} ${req.url}`)

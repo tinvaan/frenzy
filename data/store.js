@@ -2,6 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
+const config = require('config')
 
 const TrieSearch = require('trie-search')
 const { Sequelize } = require('sequelize')
@@ -46,7 +47,7 @@ const data = {
 
 // Connect to a database and define model instances
 let conn,
-    connection = (db = 'dev.sqlite') => {
+    connection = (db = config.get('database.name')) => {
         if (!conn) {
             conn = new Sequelize({
                 logging: false,
