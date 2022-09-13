@@ -1,12 +1,10 @@
 'use strict'
 
-const request = require('supertest')
+const { app } = require('../index')
 
-const store = require('../../data/store')
-const fixtures = require('../../tests/fixtures')
-const { server } = require('../../app/index')
-
-const app = request(server)
+const fixtures = require('../../fixtures')
+const store = require('../../../data/store')
+const { server } = require('../../../app/index')
 
 
 beforeEach(async () => await store.up())
@@ -25,11 +23,11 @@ describe('Query user details', () => {
     })
 
     test('Fetch a user by id', async () => {
+        const user = await store.users.findOne({ where: { id: 0 } })
+
         let r = await app.get('/users/foobar')
         expect(r.statusCode).toEqual(404)
         expect(r.body.message).toEqual('User(foobar) not found')
-
-        const user = await store.users.findOne({ where: { id: 0 } })
 
         r = await app.get(`/users/${user.id}`)
         expect(r.statusCode).toEqual(200)
@@ -41,7 +39,7 @@ describe('Query user details', () => {
     test('List all user purchases', async () => {
         const user = await store.users.findOne({ where: { id: 0 } })
 
-        r = await app.get(`/users/12421435234532453/purchases`)
+        let r = await app.get(`/users/12421435234532453/purchases`)
         expect(r.statusCode).toEqual(404)
 
         r = await app.get(`/users/${user.id}/purchases`)
