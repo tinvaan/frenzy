@@ -52,7 +52,7 @@ let conn,
             conn = new Sequelize({
                 logging: false,
                 dialect: 'sqlite',
-                storage: path.resolve(__dirname, '..', db)
+                storage: `www-data ${path.resolve(__dirname, '..', db)}`,
             })
         }
         return conn
@@ -66,30 +66,34 @@ const restaurants = Restaurants(connection())
 
 // Populate database with raw data
 const up = async () => {
-    await users.sync()
-    await users.bulkCreate(data.users())
-
-    await restaurants.sync()
-    await restaurants.bulkCreate(data.restaurants())
+    try {
+        await users.sync({ force: true })
+        await users.bulkCreate(data.users())
+    
+        await restaurants.sync({ force: true })
+        await restaurants.bulkCreate(data.restaurants())
+    } catch (err) {
+        console.error('Failed to populate database', err)
+    }
 }
 
 // Cleanup the database
 const down = async () => {
-    await users.destroy({ truncate: true, cascade: true })
-    await restaurants.destroy({ truncate: true, cascade: true })
+    try {
+        await users.destroy({ truncate: true, cascade: true })
+        await restaurants.destroy({ truncate: true, cascade: true })
+    } catch (err) {
+        console.error('Failed to cleanup database', err)
+    }
 }
 
 
-module.exports = {
-    up, down, data, trie, users, restaurants, connection
-}
-
-
+module.exports = { up, down, data, trie, users, restaurants, connection }
 if (require.main === module) {
     connection().sync({force: true})
         .catch(err => console.error(err))
         .then(res => {
-            if (process.argv[2] === 'up')   return up()
-            if (process.argv[2] === 'down') return down()
+            if (process.argv[2] === 'up')   up()
+            if (process.argv[2] === 'down') down()
         })
 }
