@@ -5,9 +5,9 @@
   "main": "app/index.js",
   "scripts": {
     "debug": "node inspect app/index.js",
-    "test": "jest --silent --testTimeout=10000000",
-    "dev": "nodemon --no-deprecation app/index.js",
-    "start": "node --no-deprecation app/index.js",
+    "test": "jest --silent --runInBand",
+    "dev": "nodemon --no-deprecation app/index.js start",
+    "start": "node --no-deprecation app/index.js start",
     "prestart": "node --no-deprecation data/store.js up",
     "poststart": "node --no-deprecation data/store.js down"
   },
