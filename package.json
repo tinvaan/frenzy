@@ -5,7 +5,7 @@
   "main": "app/index.js",
   "scripts": {
     "debug": "node inspect app/index.js",
-    "test": "jest --silent --runInBand",
+    "test": "jest --silent --runInBand --testTimeout=1000000",
     "dev": "nodemon --no-deprecation app/index.js start",
     "start": "node --no-deprecation app/index.js start",
     "prestart": "node --no-deprecation data/store.js up",
