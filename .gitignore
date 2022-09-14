@@ -1,4 +1,5 @@
 *.sqlite
 coverage/
+www-data/
 .DS_Store/
 node_modules/
