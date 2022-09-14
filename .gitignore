@@ -1,4 +1,6 @@
+*.patch
 *.sqlite
+
 coverage/
 www-data/
 .DS_Store/
