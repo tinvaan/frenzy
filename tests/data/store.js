@@ -19,8 +19,9 @@ afterEach(async () => {
 
 afterAll(async () => {
     // Remove the database
-    fs.unlinkSync(path.resolve(config.get('service.root'),
-                               config.get('database.name')))
+    const dbpath = path.resolve(config.get('service.root'),
+                                config.get('database.name'))
+    if (fs.existsSync(dbpath)) { fs.unlinkSync(dbpath) }
 })
 
 describe('Users model population', () => {

@@ -3,26 +3,30 @@
 const fs = require('fs')
 const path = require('path')
 const config = require('config')
-
-const { app } = require('../index')
+const request = require('supertest')
 
 const fixtures = require('../../fixtures')
 const store = require('../../../data/store')
-const server = require('../../../app/server')
+const service = require('../../../app')
 
+
+let app
 
 beforeAll(async () => {
-    await server.run()
     await store.up()
+    const server = await service.start()
+
+    app = request(server)
 })
 
 afterAll(async () => {
     await store.down()
-    await server.close()
+    await service.stop()
 
     // Remove the database
-    fs.unlinkSync(path.resolve(config.get('service.root'),
-                               config.get('database.name')))
+    const dbpath = path.resolve(config.get('service.root'),
+                                config.get('database.name'))
+    if (fs.existsSync(dbpath)) { fs.unlinkSync(dbpath) }
 })
 
 describe('Query user details', () => {
