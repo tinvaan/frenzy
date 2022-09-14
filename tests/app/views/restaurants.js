@@ -54,22 +54,19 @@ describe('Query restaurants details', () => {
         expect(r.body.timings).toEqual(restaurant.timings)
     })
 
-    // FIXME
-    test.skip('Show all restaurants open at a certain datetime', async () => {
-        let r = await app.get('/restaurants/open').query({time: ''})
+    test('Show all restaurants open at a certain datetime', async () => {
+        let r = await app.get('/restaurants/open')
+        expect(r.statusCode).toEqual(400)
+
+        r = await app.get('/restaurants/open').query({time: ''})
         expect(r.statusCode).toEqual(400)
 
         r = await app.get('/restaurants/open').query({time: 'foobar'})
         expect(r.statusCode).toEqual(400)
 
-        r = await app.get('/restaurants/open')
-        expect(r.statusCode).toEqual(200)
-        expect(r.body.length).toBeGreaterThan(1)
-
         r = await app.get('/restaurants/open').query({ time: '2022-09-11T09:53:58.821Z' })
         expect(r.statusCode).toEqual(200)
-        // TODO: Fixme
-        // expect(r.body).toEqual(fixtures.read('restaurants', '2022-09-11T09:53:58.821Z', true))
+        expect(r.body).toEqual(fixtures.read('restaurants', '2022-09-11T09:53:58.821Z', true))
 
         r = await app.get('/restaurants/open').query({ time: '2022-09-12T17:45:46.303Z' })
         expect(r.statusCode).toEqual(200)
