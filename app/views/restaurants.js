@@ -1,7 +1,7 @@
 'use strict'
 
 const moment = require('moment-range').extendMoment(require('moment'))
-const { BadRequestError, NotFoundError } = require('restify-errors')
+const { BadRequestError, NotFoundError, InternalError } = require('restify-errors')
 
 const store = require('../../data/store')
 const datetime = require('../../utils/datetime')
@@ -26,21 +26,29 @@ exports.fetch = async (req, res, next) => {
 }
 
 exports.open = async (req, res, next) => {
-    const time = moment(req.query.time).set(datetime.defaults.dates)
-    if (!time.isValid()) {
+    const dt = moment(req.query.time).set(datetime.defaults.dates)
+    if (req.query.time === undefined || !dt.isValid()) {
         return next(new BadRequestError('Invalid date'))
     }
 
-    const restaurants = await store.restaurants.findAll()
-    const active = restaurants
-        .filter((restaurant) => {
-            let timings = datetime.parse(restaurant.timings).flat()
-            return timings.find(t => time.within(t.hours) && t.day === time.format('ddd'))
-        })
-        .map(restaurant => Object({ name: restaurant.name, timings: restaurant.timings }))
+    try {
+        const restaurants = await store.restaurants.findAll()
+        const active = restaurants
+            .filter((restaurant) => {
+                if (restaurant.timings[dt.format('ddd')] !== undefined) {
+                    return restaurant.timings[dt.format('ddd')]
+                        .find(hours => dt.within(moment.range(hours.start, hours.end)))
+                }
+            })
 
-    res.json(active)
-    next()
+        res.json(active.map(restaurant => Object({
+            name: restaurant.name, timings: restaurant.timings
+        })))
+        next()
+    } catch (err) {
+        console.error(err)
+        return next(InternalError('Failed to query open restaurants'))
+    }
 }
 
 exports.search = async (req, res, next) => {
