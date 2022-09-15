@@ -26,24 +26,23 @@ exports.fetch = async (req, res, next) => {
 }
 
 exports.open = async (req, res, next) => {
-    const dt = moment(req.query.time).set(datetime.defaults.dates)
-    if (req.query.time === undefined || !dt.isValid()) {
+    const d = moment(req.query.time).set(datetime.defaults.dates)
+    if (req.query.time === undefined || !d.isValid()) {
         return next(new BadRequestError('Invalid date'))
     }
 
     try {
-        const restaurants = await store.restaurants.findAll()
-        const active = restaurants
-            .filter((restaurant) => {
-                if (restaurant.timings[dt.format('ddd')] !== undefined) {
-                    return restaurant.timings[dt.format('ddd')]
-                        .find(hours => dt.within(moment.range(hours.start, hours.end)))
-                }
-            })
+        const regular = `SELECT r.name FROM restaurants r, json_each(r.timings) dt WHERE dt.key = '${d.format('ddd')}' AND ` +
+                        `(json_extract(r.timings, '$.' || dt.key || '[0].start') < '${d.toISOString()}' AND ` +
+                         `json_extract(r.timings, '$.' || dt.key || '[0].end') > '${d.toISOString()}')`
 
-        res.json(active.map(restaurant => Object({
-            name: restaurant.name, timings: restaurant.timings
-        })))
+        const overnight = `SELECT r.name FROM restaurants r, json_each(r.timings) dt WHERE dt.key = '${d.format('ddd')}' AND ` +
+                          `(json_extract(r.timings, '$.' || dt.key || '[1].start') < '${d.toISOString()}' AND ` +
+                           `json_extract(r.timings, '$.' || dt.key || '[1].end') > '${ d.toISOString()}')`
+
+        const [rows, metadata] = await store.connection().query(regular + ' UNION ' + overnight + ';')
+
+        res.json(rows.map(row => row.name))
         next()
     } catch (err) {
         console.error(err)
