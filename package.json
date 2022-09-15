@@ -29,7 +29,7 @@
     "restify-errors": "^8.0.2",
     "restify-router": "^0.6.2",
     "sequelize": "^6.21.4",
-    "sqlite3": "^5.0.11"
+    "sqlite3": "^5.1.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.0.2",
