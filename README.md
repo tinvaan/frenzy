@@ -25,7 +25,7 @@ The frenzy service exposes the following API endpoints. (Declared in `app/routes
     &nbsp; &nbsp;`x` - number of dishes falling within price range. <br/>
     &nbsp; &nbsp;`y` - number of restaurants to be returned. <br/>
     &nbsp; &nbsp;`price` - price range to filter against.
-* `GET /restaurants/search?name` - Search for restaurants or dishes by name.
+* `GET /restaurants/search?name=<string>` - Search for restaurants or dishes by name.
 
 ## ETL scripts
 The ETL scripts are launched by default on startup (via the `npm start`) command.
