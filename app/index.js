@@ -45,7 +45,7 @@ const start = async () => {
     await init()
 
     // Run the app server
-    return server.listen(config.get('service.port'), async () => {
+    return server.listen(process.env.PORT || config.get('service.port'), async () => {
         console.log(`${server.name} listening at ${server.url}`)
     })
 }
