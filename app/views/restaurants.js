@@ -40,7 +40,7 @@ exports.open = async (req, res, next) => {
                           `(json_extract(r.timings, '$.' || dt.key || '[1].start') < '${d.toISOString()}' AND ` +
                            `json_extract(r.timings, '$.' || dt.key || '[1].end') > '${ d.toISOString()}')`
 
-        const [rows, metadata] = await store.connection().query(regular + ' UNION ' + overnight + ';')
+        const [rows, metadata] = await store.connection().query(`${regular} UNION ${overnight};`)
 
         res.json(rows.map(row => row.name))
         next()
