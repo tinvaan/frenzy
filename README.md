@@ -115,6 +115,11 @@ Snapshots:   0 total
 Time:        41.787 s
 ```
 
+## Deployment
+
+Once all unit tests pass and the CI is green, you may deploy your source to Heroku via the CI. Simply push your changes to the `deploy` branch and watch Github Actions do the rest.
+
+
 ## Contributing
 
 Report issues via the Github issue tracker and or reach out to Harish Navnit <harishnavnit@gmail.com> for any queries. Pull requests are welcome!
