@@ -28,8 +28,20 @@ The frenzy service exposes the following API endpoints. (Declared in `app/routes
 * `GET /restaurants/search?name=<string>` - Search for restaurants or dishes by name.
 
 ## ETL scripts
-The ETL scripts are launched by default on startup (via the `npm start`) command.
-You may choose to run them ad-hoc by invoking the `prestart` script (`npm run prestart`) however, that is not recommended to avoid any accidental database corruption.
+Launch the ETL scripts to setup the database via `npm` command.
+```bash
+▶ npm run store -- up  // setup the database
+
+> frenzy@1.0.0 store
+> node --no-deprecation data/store.js
+
+
+▶ npm run store -- down  // Cleanup the database
+
+> frenzy@1.0.0 store
+> node --no-deprecation data/store.js
+
+```
 
 ## Development
 
