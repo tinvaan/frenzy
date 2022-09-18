@@ -1,6 +1,6 @@
 'use strict'
 
-const moment = require('moment-range').extendMoment(require('moment'))
+const moment = require('moment')
 
 const defaults = {
     dates: { month: 'Jan', year: 1970 }
@@ -41,16 +41,19 @@ const parse = (timings) => {
             dt.set('day', dt.day() + 1)
             days.forEach(d => overflows.push({
                 day: d,
-                hours: moment.range(
-                    dt.clone().startOf('day').set(defaults.dates),
-                    dt.set(defaults.dates)
-                )
+                hours: {
+                    start: dt.clone().startOf('day').set(defaults.dates).format('hh:mm A'),
+                    end: dt.set(defaults.dates).format('hh:mm A')
+                }
             }))
         }
 
         days = days.map(d => Object({
             day: d,
-            hours: moment.range(opening.set('day', d), closing.set('day', d))
+            hours: {
+                start: opening.set('day', d).format('hh:mm A'),
+                end: closing.set('day', d).format('hh:mm A')
+            }
         }))
         days.push(...overflows)
         return objectify(days)
