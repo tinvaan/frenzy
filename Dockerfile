@@ -5,7 +5,8 @@ RUN mkdir -p /frenzy
 WORKDIR /frenzy
 ADD . /frenzy
 
-RUN npm install --verbose
+RUN npm ci --verbose
+RUN npm run store -- up
 
 EXPOSE 3000
 
