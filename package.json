@@ -24,7 +24,6 @@
   "dependencies": {
     "config": "^3.3.8",
     "moment": "^2.29.4",
-    "moment-range": "^4.0.2",
     "restify": "^8.6.1",
     "restify-errors": "^8.0.2",
     "restify-router": "^0.6.2",

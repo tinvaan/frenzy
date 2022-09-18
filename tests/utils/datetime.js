@@ -1,6 +1,6 @@
 'use strict'
 
-const moment = require('moment-range').extendMoment(require('moment'))
+const moment = require('moment')
 
 const datetime = require('../../utils/datetime')
 
@@ -12,10 +12,6 @@ function inspect(string) {
 
         expect(days.length).toBeGreaterThan(0)
         expect(hours.length).toBeGreaterThanOrEqual(1)
-        hours.forEach(t => {
-            expect(moment.isRange(t)).toBeTruthy()
-            expect(t.valueOf()).toBeGreaterThanOrEqual(0)
-        })
     }
 }
 
@@ -31,9 +27,6 @@ describe('Parse a given weekly timetable string', () => {
             for (let dt of Object.values(datetime.parse(string))) {
                 let days = Object.keys(dt)
                 expect(days.includes('Invalid date')).toBeTruthy()
-                Object.values(dt).flat().forEach(t => {
-                    expect(moment.isRange(t) && t.valueOf() >= 0).toBeFalsy()
-                })
             }
         })
     })
