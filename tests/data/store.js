@@ -47,13 +47,16 @@ describe('Users model population', () => {
 
 describe('Restaurants model population', () => {
     test('Restaurants model insertion', async () => {
+        let frozen = await store.data.restaurants()
+
         const before = await store.restaurants.findAll()
-        expect(before.length).toBeLessThan(store.data.restaurants().length)
+        expect(before.length).toBeLessThan(frozen.length)
 
         await store.up()
 
+        frozen = await store.data.restaurants()
         const after = await store.restaurants.findAll()
-        expect(after.length).toEqual(store.data.restaurants().length)
+        expect(after.length).toEqual(frozen.length)
     })
 
     test('Restaurants model cleanup', async () => {
