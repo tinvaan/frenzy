@@ -94,10 +94,15 @@ describe('Query restaurants details', () => {
             let r = await app.get('/restaurants/search').query({ name: q })
 
             expect(r.statusCode).toEqual(200)
+            expect(r.body.length).toBeGreaterThan(0)
             r.body.forEach(res => {
                 expect(
-                    res.food?.toLowerCase().includes(q.toLowerCase()) ||
-                    res.restaurant?.toLowerCase().includes(q.toLowerCase())
+                    res.dish?.toLowerCase().includes(q.toLowerCase()) ||
+                    res.restaurant?.toLowerCase().includes(q.toLowerCase()) ||
+                    q.split(' ').every(term =>
+                        res.dish?.toLowerCase().includes(term.toLowerCase()) ||
+                        res.restaurant?.toLowerCase().includes(term.toLowerCase())
+                    )
                 ).toBeTruthy()
             })
         })
