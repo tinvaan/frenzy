@@ -5,11 +5,10 @@
   "main": "app/index.js",
   "scripts": {
     "debug": "node inspect app/index.js",
-    "test": "jest --silent --runInBand --testTimeout=1000000",
-    "dev": "nodemon --no-deprecation app/index.js start",
+    "store": "node --no-deprecation data/store.js",
     "start": "node --no-deprecation app/index.js start",
-    "prestart": "node --no-deprecation data/store.js up",
-    "poststart": "node --no-deprecation data/store.js down"
+    "dev": "nodemon --no-deprecation app/index.js start",
+    "test": "jest --silent --runInBand --testTimeout=1000000"
   },
   "repository": {
     "type": "git",
