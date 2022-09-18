@@ -1,6 +1,7 @@
 'use strict'
 
 const moment = require('moment')
+const { QueryTypes } = require('sequelize')
 const { BadRequestError, NotFoundError, InternalError } = require('restify-errors')
 
 const store = require('../../data/store')
@@ -55,7 +56,18 @@ exports.search = async (req, res, next) => {
         return next(BadRequestError('Invalid search term'))
     }
 
-    res.json(store.trie.search(req.query.name))
+    let sql, metadata,
+        rows = store.trie.search(req.query.name)
+    if (rows.length === 0) {
+        [rows, metadata] = await store.connection().query(
+            `SELECT * FROM dishes(:name) ORDER BY rank;`, {
+                type: QueryTypes.SELECT,
+                replacements: { name: req.query.name }
+            }
+        )
+    }
+
+    res.json([rows].flat())
     next()
 }
 
