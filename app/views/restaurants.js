@@ -1,6 +1,6 @@
 'use strict'
 
-const moment = require('moment-range').extendMoment(require('moment'))
+const moment = require('moment')
 const { BadRequestError, NotFoundError, InternalError } = require('restify-errors')
 
 const store = require('../../data/store')
@@ -33,12 +33,12 @@ exports.open = async (req, res, next) => {
 
     try {
         const regular = `SELECT r.name FROM restaurants r, json_each(r.timings) dt WHERE dt.key = '${d.format('ddd')}' AND ` +
-                        `(json_extract(r.timings, '$.' || dt.key || '[0].start') < '${d.toISOString()}' AND ` +
-                         `json_extract(r.timings, '$.' || dt.key || '[0].end') > '${d.toISOString()}')`
+                        `(json_extract(r.timings, '$.' || dt.key || '[0].start') < '${d.format('hh:mm A')}' AND ` +
+                         `json_extract(r.timings, '$.' || dt.key || '[0].end') > '${d.format('hh:mm A')}')`
 
         const overnight = `SELECT r.name FROM restaurants r, json_each(r.timings) dt WHERE dt.key = '${d.format('ddd')}' AND ` +
-                          `(json_extract(r.timings, '$.' || dt.key || '[1].start') < '${d.toISOString()}' AND ` +
-                           `json_extract(r.timings, '$.' || dt.key || '[1].end') > '${ d.toISOString()}')`
+                          `(json_extract(r.timings, '$.' || dt.key || '[1].start') < '${d.format('hh:mm A')}' AND ` +
+                           `json_extract(r.timings, '$.' || dt.key || '[1].end') > '${ d.format('hh:mm A')}')`
 
         const [rows, metadata] = await store.connection().query(`${regular} UNION ${overnight};`)
 
