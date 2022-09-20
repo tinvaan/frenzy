@@ -4,7 +4,6 @@ const fs = require('fs')
 const path = require('path')
 const config = require('config')
 
-const TrieSearch = require('trie-search')
 const { Sequelize, QueryTypes } = require('sequelize')
 
 const datetime = require('../utils/datetime')
@@ -12,7 +11,6 @@ const { Users } = require('../app/models/users')
 const { Restaurants } = require('../app/models/restaurants')
 
 
-const trie = new TrieSearch('name', { ignoreCase: true })
 const data = {
     users: () => {
         const content = fs.readFileSync(path.resolve(__dirname, 'users.json'), 'utf-8')
@@ -30,12 +28,11 @@ const data = {
         return Promise.all(
             Object.values(JSON.parse(content))
                 .map(async (item) => {
-                    // Setup FTS & search trie
+                    // Setup FTS tables
                     await connection().query(
                         `CREATE VIRTUAL TABLE IF NOT EXISTS dishes USING fts5(restaurant, dish);`
                     )
 
-                    trie.map(item.restaurantName, {dish: null, restaurant: item.restaurantName})
                     item.menu.forEach(async (dish) => {
                         let opts = {
                             type: QueryTypes.INSERT,
@@ -43,8 +40,6 @@ const data = {
                         },
                         sql = `INSERT INTO dishes(restaurant, dish) VALUES(:restaurant, :dish)`
                         await connection().query(sql, opts)
-
-                        trie.map(dish.dishName, { dish: dish.dishName, restaurant: item.restaurantName })
                     })
 
                     return {
@@ -107,7 +102,7 @@ const down = async () => {
 }
 
 
-module.exports = { up, down, data, trie, users, restaurants, connection }
+module.exports = { up, down, data, users, restaurants, connection }
 if (require.main === module) {
     connection().sync({force: true})
         .catch(err => console.error(err))
