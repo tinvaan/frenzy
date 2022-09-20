@@ -54,15 +54,12 @@ exports.search = async (req, res, next) => {
         return next(BadRequestError('Invalid search term'))
     }
 
-    let rows = store.trie.search(req.query.name)
-    if (rows.length === 0 || true) {
-        rows = await store.connection().query(
-            'SELECT * FROM dishes(:name) ORDER BY RANK;', {
-                type: QueryTypes.SELECT,
-                replacements: { name: req.query.name }
-            }
-        )
-    }
+    const rows = await store.connection().query(
+        'SELECT * FROM dishes(:name) ORDER BY RANK;', {
+            type: QueryTypes.SELECT,
+            replacements: { name: req.query.name }
+        }
+    )
 
     res.json([rows].flat())
     next()
